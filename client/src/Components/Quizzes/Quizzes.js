@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import Quiz from "../Quiz/Quiz";
 
 const QuizLink = styled.h3`
   font-size: 1.5em;
