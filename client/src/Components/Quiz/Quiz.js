@@ -1,40 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+
+const Body = styled.div`
+  text-align: center;
+`;
+
+const mixAnswers = (answersArray) => {
+  let currentIndex = answersArray.length,
+    randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [answersArray[currentIndex], answersArray[randomIndex]] = [
+      answersArray[randomIndex],
+      answersArray[currentIndex],
+    ];
+  }
+
+  return answersArray;
+};
 
 const Quiz = () => {
-  const [fakeData, setfakeData] = useState([
-    {
-      title: "Geography Quiz",
-      id: "1",
-      questions: [
-        {
-          question: "What is the Capital Of England?",
-          correct_answer: "London",
-          incorrect_answer: ["Nottingham", "Birmingham", "Manchester"],
-        },
-        {
-          question: "What is the Capital Of France?",
-          correct_answer: "Paris",
-          incorrect_answer: ["Nice", "Marseille", "Bordeaux"],
-        },
-        {
-          question: "What is the Capital Of Germany?",
-          correct_answer: "Berlin",
-          incorrect_answer: ["Munich", "Cologne", "Dresden"],
-        },
-      ],
-    },
-    { title: "Maths Quiz", id: "2" },
-    { title: "English Quiz", id: "3" },
-    { title: "Capital Cities Quiz", id: "4" },
-  ]);
+  let params = useParams();
+  const [realData, setRealData] = useState({});
+
+  async function fetchQuiz() {
+    const response = await fetch(`http://localhost:5000/quiz/${params.id}`, {
+      method: "GET",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+    }).then((res) => res.json());
+
+    setRealData(response);
+  }
+
+  //will run once when the page has loaded
+  useEffect(() => {
+    fetchQuiz();
+  }, []);
+
+  const [buttonText, setbuttonText] = useState("View Answers");
+  const [showAnswers, setShowAnswers] = useState(false);
+  const [editable, setEditable] = useState(false);
 
   //we can use the params to display the correct quiz
-  let params = useParams();
   const navigate = useNavigate();
 
   const viewAnswers = () => {
+    if (showAnswers) {
+      setbuttonText("Show Answers");
+      setShowAnswers(false);
+    } else {
+      setbuttonText("Hide Answers");
+      setShowAnswers(true);
+    }
     console.log("viewAnswers");
   };
 
@@ -43,37 +69,30 @@ const Quiz = () => {
   };
 
   return (
-    <>
-      <h1>Quiz {params.id}</h1>
+    <Body>
+      <h1>{realData.title}</h1>
       <button onClick={() => viewAnswers()} type="button">
-        View Answers
+        {buttonText}
       </button>
       <button onClick={() => edit()} type="button">
         Edit
       </button>
-      <div>
-        {fakeData.map((data, i) => {
-          if (data.id === params.id) {
-            return (
-              <>
-                {data.questions.map((question, i) => {
-                  return (
-                    <div key={i}>
-                      <h1>
-                        {i + 1}) {question.question}
-                      </h1>
-                      <h3>a) {question.correct_answer}</h3>
-                      <h3>b) {question.incorrect_answer[0]}</h3>
-                      <h3>c) {question.incorrect_answer[1]}</h3>
-                      <h3>d) {question.incorrect_answer[2]}</h3>
-                    </div>
-                  );
-                })}
-              </>
-            );
-          }
+      {realData.questions &&
+        realData.questions.map((question, index) => {
+          const shuffledAnswers = mixAnswers([
+            question.correct_answer,
+            ...question.incorrect_answers,
+          ]);
+          return (
+            <>
+              <h2>{question.question}</h2>
+              <h3>a) {shuffledAnswers[0]}</h3>
+              <h3>b) {shuffledAnswers[1]}</h3>
+              <h3>c) {shuffledAnswers[2]}</h3>
+              <h3>d) {shuffledAnswers[3]}</h3>
+            </>
+          );
         })}
-      </div>
       <button onClick={() => navigate("/quizzes")} type="button">
         Back
       </button>
@@ -83,7 +102,7 @@ const Quiz = () => {
         value="Logout"
         className="btn btn-primary"
       />
-    </>
+    </Body>
   );
 };
 

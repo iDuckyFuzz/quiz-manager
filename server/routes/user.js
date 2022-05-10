@@ -24,4 +24,25 @@ userRoutes.route("/user").get(function (req, res) {
     });
 });
 
+userRoutes.route("/quiz").get(function (req, res) {
+  let db_connect = dbo.getDb("webbiskools");
+  db_connect
+    .collection("quizzes")
+    .find({})
+    .toArray(function (err, result) {
+      if (err) throw err;
+      console.log(result);
+      res.json(result);
+    });
+});
+
+userRoutes.route("/quiz/:id").get(function (req, res) {
+  let db_connect = dbo.getDb();
+  let myquery = { _id: ObjectId(req.params.id) };
+  db_connect.collection("quizzes").findOne(myquery, function (err, result) {
+    if (err) throw err;
+    res.json(result);
+  });
+});
+
 module.exports = userRoutes;
