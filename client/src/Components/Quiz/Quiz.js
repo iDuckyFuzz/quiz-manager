@@ -92,15 +92,24 @@ const Quiz = (props) => {
             <div>
               {!showAnswers && (
                 <>
-                  <h2>{question.question}</h2>
-                  {shuffledAnswers.map((answer) => {
-                    return <h3>{answer}</h3>;
+                  <h2>
+                    {index + 1}. {question.question}
+                  </h2>
+                  {shuffledAnswers.map((answer, i) => {
+                    const answerOrder = ["a", "b", "c", "d"];
+                    return (
+                      <h3>
+                        {answerOrder[i]}) {answer}
+                      </h3>
+                    );
                   })}
                 </>
               )}
               {showAnswers && (
                 <>
-                  <h2>{question.question}</h2>
+                  <h2>
+                    {index + 1}. {question.question}
+                  </h2>
                   {shuffledAnswers.map((answer) => {
                     if (answer === question.correct_answer) {
                       return <h3>{answer}</h3>;

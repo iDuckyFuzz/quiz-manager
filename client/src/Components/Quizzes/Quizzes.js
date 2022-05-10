@@ -40,8 +40,6 @@ const Quizzes = (props) => {
   }, []);
 
   const enableDelete = () => {
-    console.log("deleteQuiz");
-
     if (removeQuiz) {
       setRemoveQuiz(false);
     } else {
@@ -50,7 +48,6 @@ const Quizzes = (props) => {
   };
 
   const deleteQuiz = async (id) => {
-    console.log("this is happening");
     const response = await fetch(`http://localhost:5000/quiz/delete/${id}`, {
       method: "DELETE",
     });
