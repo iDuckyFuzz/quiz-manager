@@ -14,14 +14,14 @@ const Login = () => {
   const navigate = useNavigate();
 
   // These methods will update the state properties.
-  function updateForm(value) {
+  const updateForm = (value) => {
     return setForm((prev) => {
       return { ...prev, ...value };
     });
-  }
+  };
 
   // This function will handle the submission.
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     // When a post request is sent to the create url, we'll add a new record to the database.
@@ -36,7 +36,7 @@ const Login = () => {
     setForm({ username: "", password: "" });
     console.log(response);
     //navigate("/home");
-  }
+  };
 
   // This following section will display the form that takes the input from the user.
   return (

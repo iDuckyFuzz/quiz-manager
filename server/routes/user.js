@@ -53,4 +53,17 @@ userRoutes.route("/quiz/delete/:id").delete((req, res) => {
   });
 });
 
+// This section will help you create a new record.
+userRoutes.route("/quiz/add").post(function (req, response) {
+  let db_connect = dbo.getDb();
+  let myobj = {
+    title: req.body.title,
+    questions: req.body.questions,
+  };
+  db_connect.collection("quizzes").insertOne(myobj, function (err, res) {
+    if (err) throw err;
+    response.json(res);
+  });
+});
+
 module.exports = userRoutes;
