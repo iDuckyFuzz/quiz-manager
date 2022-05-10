@@ -19,11 +19,12 @@ const Body = styled.div`
   text-align: center;
 `;
 
-const Quizzes = () => {
+const Quizzes = (props) => {
   const navigate = useNavigate();
   const [realData, setRealData] = useState([]);
+  const [removeQuiz, setRemoveQuiz] = useState(false);
 
-  async function fetchQuizzes() {
+  const fetchQuizzes = async () => {
     const response = await fetch("http://localhost:5000/quiz", {
       method: "GET",
       mode: "cors",
@@ -31,38 +32,61 @@ const Quizzes = () => {
     }).then((res) => res.json());
 
     setRealData(response);
-  }
+  };
 
   //will run once when the page has loaded
   useEffect(() => {
     fetchQuizzes();
   }, []);
 
-  console.log(realData);
-  realData.map((data) => {
-    console.log(data);
-  });
+  const enableDelete = () => {
+    console.log("deleteQuiz");
 
-  const [quizzes, setQuizzes] = useState([
-    { title: "Geography Quiz", id: "1" },
-    { title: "Maths Quiz", id: "2" },
-    { title: "English Quiz", id: "3" },
-    { title: "Capital Cities Quiz", id: "4" },
-  ]);
+    if (removeQuiz) {
+      setRemoveQuiz(false);
+    } else {
+      setRemoveQuiz(true);
+    }
+  };
+
+  const deleteQuiz = async (id) => {
+    console.log("this is happening");
+    const response = await fetch(`http://localhost:5000/quiz/delete/${id}`, {
+      method: "DELETE",
+    });
+    console.log(response);
+  };
 
   return (
     <Body>
       <h1>Quizzes</h1>
+
+      {props.permissions === "View" || props.permissions === "Edit" ? (
+        <button onClick={() => navigate("/create")} type="button">
+          Create
+        </button>
+      ) : null}
+
+      {props.permissions === "Edit" && (
+        <button onClick={() => enableDelete()} type="button">
+          Delete
+        </button>
+      )}
       <div>
         {realData.map((quiz, i) => {
           return (
-            <QuizLink
-              onClick={() => navigate(`/quiz/${quiz._id}`)}
-              className="quiz"
-              key={i}
-            >
-              {quiz.title}
-            </QuizLink>
+            <>
+              <QuizLink
+                onClick={() => navigate(`/quiz/${quiz._id}`)}
+                className="quiz"
+                key={i}
+              >
+                {quiz.title}
+              </QuizLink>
+              {removeQuiz && (
+                <button onClick={() => deleteQuiz(quiz._id)}>X</button>
+              )}
+            </>
           );
         })}
       </div>

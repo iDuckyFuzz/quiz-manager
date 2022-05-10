@@ -6,7 +6,7 @@ const Body = styled.div`
   text-align: center;
 `;
 
-export default function Login() {
+const Login = () => {
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -70,4 +70,6 @@ export default function Login() {
       </form>
     </Body>
   );
-}
+};
+
+export default Login;

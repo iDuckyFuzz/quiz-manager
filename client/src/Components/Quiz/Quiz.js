@@ -27,11 +27,18 @@ const mixAnswers = (answersArray) => {
   return answersArray;
 };
 
-const Quiz = () => {
+const Quiz = (props) => {
   let params = useParams();
-  const [realData, setRealData] = useState({});
+  const [realData, setRealData] = useState([]);
+  const [shuffledAnswers, setshuffledAnswers] = useState([]);
+  const [buttonText, setbuttonText] = useState("View Answers");
+  const [showAnswers, setShowAnswers] = useState(false);
+  const [editable, setEditable] = useState(false);
 
-  async function fetchQuiz() {
+  //we can use the params to display the correct quiz
+  const navigate = useNavigate();
+
+  const fetchQuiz = async () => {
     const response = await fetch(`http://localhost:5000/quiz/${params.id}`, {
       method: "GET",
       mode: "cors",
@@ -39,19 +46,12 @@ const Quiz = () => {
     }).then((res) => res.json());
 
     setRealData(response);
-  }
+  };
 
   //will run once when the page has loaded
   useEffect(() => {
     fetchQuiz();
   }, []);
-
-  const [buttonText, setbuttonText] = useState("View Answers");
-  const [showAnswers, setShowAnswers] = useState(false);
-  const [editable, setEditable] = useState(false);
-
-  //we can use the params to display the correct quiz
-  const navigate = useNavigate();
 
   const viewAnswers = () => {
     if (showAnswers) {
@@ -61,7 +61,6 @@ const Quiz = () => {
       setbuttonText("Hide Answers");
       setShowAnswers(true);
     }
-    console.log("viewAnswers");
   };
 
   const edit = () => {
@@ -71,12 +70,18 @@ const Quiz = () => {
   return (
     <Body>
       <h1>{realData.title}</h1>
-      <button onClick={() => viewAnswers()} type="button">
-        {buttonText}
-      </button>
-      <button onClick={() => edit()} type="button">
-        Edit
-      </button>
+      {props.permissions === "View" || props.permissions === "Edit" ? (
+        <button onClick={() => viewAnswers()} type="button">
+          {buttonText}
+        </button>
+      ) : null}
+
+      {props.permissions === "Edit" && (
+        <button onClick={() => edit()} type="button">
+          Edit
+        </button>
+      )}
+
       {realData.questions &&
         realData.questions.map((question, index) => {
           const shuffledAnswers = mixAnswers([
@@ -84,13 +89,26 @@ const Quiz = () => {
             ...question.incorrect_answers,
           ]);
           return (
-            <>
-              <h2>{question.question}</h2>
-              <h3>a) {shuffledAnswers[0]}</h3>
-              <h3>b) {shuffledAnswers[1]}</h3>
-              <h3>c) {shuffledAnswers[2]}</h3>
-              <h3>d) {shuffledAnswers[3]}</h3>
-            </>
+            <div>
+              {!showAnswers && (
+                <>
+                  <h2>{question.question}</h2>
+                  {shuffledAnswers.map((answer) => {
+                    return <h3>{answer}</h3>;
+                  })}
+                </>
+              )}
+              {showAnswers && (
+                <>
+                  <h2>{question.question}</h2>
+                  {shuffledAnswers.map((answer) => {
+                    if (answer === question.correct_answer) {
+                      return <h3>{answer}</h3>;
+                    }
+                  })}
+                </>
+              )}
+            </div>
           );
         })}
       <button onClick={() => navigate("/quizzes")} type="button">
