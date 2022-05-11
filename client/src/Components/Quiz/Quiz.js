@@ -85,7 +85,7 @@ const Quiz = (props) => {
       {realData.questions &&
         realData.questions.map((question, index) => {
           const shuffledAnswers = mixAnswers([
-            question.correct_answer,
+            question.correct_answers,
             ...question.incorrect_answers,
           ]);
           return (
@@ -96,7 +96,7 @@ const Quiz = (props) => {
                     {index + 1}. {question.question}
                   </h2>
                   {shuffledAnswers.map((answer, i) => {
-                    const answerOrder = ["a", "b", "c", "d"];
+                    const answerOrder = ["a", "b", "c", "d", "e"];
                     return (
                       <h3>
                         {answerOrder[i]}) {answer}
@@ -111,7 +111,7 @@ const Quiz = (props) => {
                     {index + 1}. {question.question}
                   </h2>
                   {shuffledAnswers.map((answer) => {
-                    if (answer === question.correct_answer) {
+                    if ([question.correct_answers].includes(answer)) {
                       return <h3>{answer}</h3>;
                     }
                   })}

@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
+async function submitQuiz(quiz) {
+  return fetch("http://localhost:5000/quiz/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(quiz),
+  }).then((data) => data.json());
+}
+
 const Create = () => {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
@@ -57,7 +67,7 @@ const Create = () => {
       setCheckbox4(false);
       setCheckbox5(false);
 
-      e.target.reset();
+      submitQuiz(quiz);
     } else {
       window.alert("you have not selected a correct answer");
     }

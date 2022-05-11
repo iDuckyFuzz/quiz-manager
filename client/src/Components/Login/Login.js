@@ -20,14 +20,16 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [credentialsError, setCredentialsError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     let test = await loginUser({ username, password });
+    console.log(test.response);
 
     if (test.response === "invalid credentials entered") {
-      console.log("credentails are wrong mate");
+      setCredentialsError(test.response);
     } else {
       navigate("/home");
     }
@@ -55,6 +57,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        <div>{credentialsError}</div>
         <div>
           <input type="submit" value="Login" />
         </div>
