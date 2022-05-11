@@ -1,18 +1,15 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import Logout from "../Logout/Logout";
 
 const Body = styled.div`
   text-align: center;
 `;
 
-const Main = () => {
+const Main = (props, options) => {
+  const { state } = useLocation();
   let navigate = useNavigate();
-
-  const logout = () => {
-    //delete session cookie
-    navigate("/");
-  };
 
   return (
     <Body>
@@ -23,12 +20,10 @@ const Main = () => {
         Welcome to WebbiSkools Ltd Quiz Manager, please select from the options
         below
       </p>
-      <button onClick={() => navigate("/quizzes")} type="button">
+      <button onClick={() => navigate("/quizzes", { state })} type="button">
         Quizzes
       </button>
-      <button onClick={logout} type="button">
-        Logout
-      </button>
+      <Logout />
     </Body>
   );
 };

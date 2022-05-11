@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import axios from "axios";
 
 async function submitQuiz(quiz) {
@@ -21,6 +21,7 @@ async function submitQuiz(quiz) {
 }
 
 const Create = () => {
+  const { state } = useLocation();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [quiz, setQuiz] = useState({});
@@ -184,7 +185,7 @@ const Create = () => {
       <div>
         <button onClick={() => addQuestion()}>Add Question</button>
       </div>
-      <button onClick={() => navigate("/quizzes")} type="button">
+      <button onClick={() => navigate("/quizzes", { state })} type="button">
         Back
       </button>
       <input

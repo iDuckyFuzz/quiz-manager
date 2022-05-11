@@ -14,7 +14,13 @@ const Quizzes = require("./models/quizzes");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ extended: false }));
 app.use(cookieParser());
-app.use(cors());
+
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 //connect to mongodb database//
 mongoose
@@ -58,20 +64,14 @@ app.post("/login", async (req, res) => {
     res.json({
       response: "Please enter a valid password!",
     });
-  } else if (req.body.name === null || req.body.name === "") {
+  } else if (req.body.username === null || req.body.username === "") {
     res.json({
       response: "Please enter a valid username!",
     });
-  } else if (req.body.email === null || req.body.email === "") {
-    res.json({
-      response: "Please enter a valid Email address!",
-    });
   } else {
     try {
-      const user = await User.findOne({ email: req.body.email });
+      const user = await User.findOne({ username: req.body.username });
       const isMatch = await bcrypt.compare(req.body.password, user.password);
-
-      console.log(isMatch);
 
       if (isMatch) {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -85,29 +85,32 @@ app.post("/login", async (req, res) => {
           httpOnly: true,
         };
         res.cookie("jwt", token, cookieOptions);
-        res.cookie("hi", "hello");
-
-        console.log(req.cookies);
 
         res.json({
           response: "Details match!",
           authenticated: isMatch,
           user: user.username,
+          permissions: user.permissions,
         });
       } else {
-        console.log("here");
         res.json({
           response: "Username or Password incorrect!",
         });
       }
     } catch (error) {
-      console.log("or here");
       res.json({
         response: "Username or Password incorrect!",
       });
     }
-    // console.log(req.body.name, req.body.email, req.body.password);
   }
+});
+
+app.get("/logout", (req, res) => {
+  authenticated = false;
+  res.clearCookie("jwt");
+  res.json({
+    response: "User has been logged out",
+  });
 });
 
 app.listen(port, () => {

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import Logout from "../Logout/Logout";
 
 const Body = styled.div`
   text-align: center;
@@ -13,7 +14,7 @@ const mixAnswers = (answersArray) => {
     randomIndex;
 
   // While there remain elements to shuffle.
-  while (currentIndex != 0) {
+  while (currentIndex !== 0) {
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
@@ -29,6 +30,7 @@ const mixAnswers = (answersArray) => {
 };
 
 const Quiz = (props) => {
+  const { state } = useLocation();
   let params = useParams();
   const [realData, setRealData] = useState([]);
   const [shuffledAnswers, setshuffledAnswers] = useState([]);
@@ -76,13 +78,13 @@ const Quiz = (props) => {
   return (
     <Body>
       <h1>{realData.title}</h1>
-      {props.permissions === "View" || props.permissions === "Edit" ? (
+      {state.canEdit || state.viewAnswers ? (
         <button onClick={() => viewAnswers()} type="button">
           {buttonText}
         </button>
       ) : null}
 
-      {props.permissions === "Edit" && (
+      {state.canEdit && (
         <button onClick={() => edit()} type="button">
           Edit
         </button>
@@ -126,15 +128,10 @@ const Quiz = (props) => {
             </div>
           );
         })}
-      <button onClick={() => navigate("/quizzes")} type="button">
+      <button onClick={() => navigate("/quizzes", { state })} type="button">
         Back
       </button>
-      <input
-        onClick={() => navigate("/")}
-        type="submit"
-        value="Logout"
-        className="btn btn-primary"
-      />
+      <Logout />
     </Body>
   );
 };

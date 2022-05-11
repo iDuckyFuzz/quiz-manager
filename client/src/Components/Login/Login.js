@@ -25,6 +25,7 @@ const Login = () => {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: true,
     };
 
     const response = await axios.post(
@@ -36,7 +37,7 @@ const Login = () => {
     if (response.data.response !== "Details match!") {
       setCredentialsError(response.data.response);
     } else {
-      navigate("/home");
+      navigate("/home", { state: response.data.permissions });
     }
   };
 

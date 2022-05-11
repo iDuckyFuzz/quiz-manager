@@ -12,8 +12,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Main />} />
-        <Route path="/quiz/:id" element={<Quiz permissions="Edit" />} />
-        <Route path="/quizzes" element={<Quizzes permissions="Edit" />} />
+        <Route path="/quiz/:id" element={<Quiz />} />
+        <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/create" element={<Create />} />
       </Routes>
     </BrowserRouter>
