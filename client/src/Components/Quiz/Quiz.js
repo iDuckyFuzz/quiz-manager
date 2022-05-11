@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
 
 const Body = styled.div`
   text-align: center;
@@ -39,13 +40,18 @@ const Quiz = (props) => {
   const navigate = useNavigate();
 
   const fetchQuiz = async () => {
-    const response = await fetch(`http://localhost:5000/quiz/${params.id}`, {
-      method: "GET",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-    }).then((res) => res.json());
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-    setRealData(response);
+    const response = await axios.get(
+      `http://localhost:5000/quiz/${params.id}`,
+      config
+    );
+
+    setRealData(response.data);
   };
 
   //will run once when the page has loaded

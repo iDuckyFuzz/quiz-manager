@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const QuizLink = styled.h3`
   font-size: 1.5em;
@@ -25,13 +26,15 @@ const Quizzes = (props) => {
   const [removeQuiz, setRemoveQuiz] = useState(false);
 
   const fetchQuizzes = async () => {
-    const response = await fetch("http://localhost:5000/quiz", {
-      method: "GET",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-    }).then((res) => res.json());
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-    setRealData(response);
+    const response = await axios.get(`http://localhost:5000/quiz/`, config);
+
+    setRealData(response.data);
   };
 
   //will run once when the page has loaded

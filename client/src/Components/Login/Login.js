@@ -1,20 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
+import axios from "axios";
 
 const Body = styled.div`
   text-align: center;
 `;
-
-async function loginUser(credentials) {
-  return fetch("http://localhost:5000/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
-}
 
 const Login = () => {
   const navigate = useNavigate();
@@ -25,11 +16,25 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let test = await loginUser({ username, password });
-    console.log(test.response);
+    const body = {
+      username,
+      password,
+    };
 
-    if (test.response === "invalid credentials entered") {
-      setCredentialsError(test.response);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await axios.post(
+      "http://localhost:5000/login",
+      body,
+      config
+    );
+
+    if (response.data.response !== "Details match!") {
+      setCredentialsError(response.data.response);
     } else {
       navigate("/home");
     }
@@ -52,7 +57,7 @@ const Login = () => {
         <div>
           <label htmlFor="password">Password: </label>
           <input
-            type="text"
+            type="password"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
           />

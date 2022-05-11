@@ -3,17 +3,18 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 5000;
-const cookieParser = require("cookie-parser");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
 const User = require("./models/users");
 const Quizzes = require("./models/quizzes");
 
-app.use(cors());
-app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 
 //connect to mongodb database//
 mongoose
@@ -70,6 +71,8 @@ app.post("/login", async (req, res) => {
       const user = await User.findOne({ email: req.body.email });
       const isMatch = await bcrypt.compare(req.body.password, user.password);
 
+      console.log(isMatch);
+
       if (isMatch) {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
           expiresIn: process.env.JWT_EXPIRES_IN,
@@ -82,11 +85,14 @@ app.post("/login", async (req, res) => {
           httpOnly: true,
         };
         res.cookie("jwt", token, cookieOptions);
+        res.cookie("hi", "hello");
+
+        console.log(req.cookies);
 
         res.json({
           response: "Details match!",
           authenticated: isMatch,
-          user: user.name,
+          user: user.username,
         });
       } else {
         console.log("here");

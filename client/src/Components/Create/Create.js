@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 async function submitQuiz(quiz) {
-  return fetch("http://localhost:5000/quiz/add", {
-    method: "POST",
+  const body = {
+    quiz,
+  };
+
+  const config = {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(quiz),
-  }).then((data) => data.json());
+  };
+
+  const response = await axios.post(
+    "http://localhost:5000/quiz/add",
+    body,
+    config
+  );
 }
 
 const Create = () => {
