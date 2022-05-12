@@ -20,6 +20,12 @@ const Edit = () => {
   const [updatedQuiz, setUpdatedQuiz] = useState({});
   const [quizUpdate, setQuizUpdated] = useState(false);
 
+  const [newQ, setNewQ] = useState();
+  const [newA, setNewA] = useState();
+  const [correctAnswer, setCorrectAnswer] = useState();
+
+  const [error, setError] = useState(false);
+
   const fetchQuizzes = async (state) => {
     const config = {
       headers: {
@@ -35,12 +41,47 @@ const Edit = () => {
     setQuiz(response.data);
   };
 
-  const updateQuiz = () => {
-    console.log(quiz);
-    setQuizUpdated(true);
+  const postQuizData = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const body = {
+      title: quiz.title,
+      questions: quiz.questions,
+    };
+
+    const response = await axios.post(
+      `http://localhost:5000/quiz/update/${state.id}`,
+      body,
+      config
+    );
   };
 
-  const addQuestion = (i) => {
+  const updateQuiz = () => {
+    let array = quiz;
+
+    array.questions.map((question) => {
+      if (
+        question.incorrect_answers.length + question.correct_answers.length <
+        3
+      ) {
+        console.log(
+          "cannot update, 1 or more question do not meet minimum requirements"
+        );
+        setError(true);
+      } else {
+        // setQuizUpdated(true);
+        // setError(false);
+        console.log("posting data");
+        //postQuizData();
+      }
+    });
+  };
+
+  const addAnswer = (i) => {
     let array = quiz;
     if (
       array.questions[i].incorrect_answers.length +
@@ -54,12 +95,34 @@ const Edit = () => {
     }
   };
 
+  const addQuestion = (e) => {
+    console.log(e);
+    let array = quiz;
+
+    console.log(
+      array.questions.push({
+        question: "",
+        incorrect_answers: [""],
+        correct_answers: [],
+      })
+    );
+    setQuiz({ ...array });
+  };
+
   const deleteQuestion = (e) => {
     let array = quiz;
     console.log(e);
     array.questions.splice(e, 1);
     setQuiz({ ...array });
     setQuizUpdated(false);
+  };
+
+  const newAnswer = (e, i) => {
+    console.log(e.target.value, i);
+  };
+
+  const newQuestion = (e, i) => {
+    setNewQ(e.target.value);
   };
 
   const deleteAnswer = (i, answer) => {
@@ -95,22 +158,18 @@ const Edit = () => {
                 <StyledInput
                   defaultValue={questions.question}
                   key={questions.question}
-                  onChange={(e) => {
-                    console.log(e.target.value);
-                  }}
+                  onChange={(e) => newQuestion(e)}
                 ></StyledInput>
                 <button onClick={() => deleteQuestion(index)}>x</button>
                 {questions.correct_answers
                   .concat(questions.incorrect_answers)
-                  .map((answer) => {
+                  .map((answer, i) => {
                     return (
                       <div>
                         <input
                           defaultValue={answer}
                           key={answer}
-                          onChange={(e) => {
-                            console.log(e.target.value);
-                          }}
+                          onChange={(e) => newAnswer(e, i)}
                         ></input>
                         <input
                           defaultChecked={questions.correct_answers.includes(
@@ -127,11 +186,15 @@ const Edit = () => {
                       </div>
                     );
                   })}
-                <button onClick={() => addQuestion(index)}>+</button>
+                <button onClick={() => addAnswer(index)}>+</button>
               </div>
             </>
           );
         })}
+        <div>
+          <button onClick={() => addQuestion()}>Add Question</button>
+        </div>
+        {error && <h3>Unable to update</h3>}
         <div>
           <button onClick={() => updateQuiz()}>Update Quiz</button>
         </div>

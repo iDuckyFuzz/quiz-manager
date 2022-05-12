@@ -59,6 +59,11 @@ app.post("/quiz/add", async (req, res) => {
   res.json(quizzes);
 });
 
+app.post("/quiz/update/:id", async (req, res) => {
+  console.log("---->", req.body);
+  const quizzes = await Quizzes.findOneAndUpdate(req.params.id, req.body);
+});
+
 app.post("/login", async (req, res) => {
   if (req.body.password === null || req.body.password === "") {
     res.json({
