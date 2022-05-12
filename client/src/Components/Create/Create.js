@@ -22,10 +22,21 @@ async function submitQuiz(quiz) {
 
 const Create = () => {
   const { state } = useLocation();
+
   const navigate = useNavigate();
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState([
+    {
+      question: "",
+      incorrect_answers: ["", "", "", "", ""],
+      correct_answers: ["", "", "", "", ""],
+    },
+  ]);
   const [quiz, setQuiz] = useState({});
-  const [questionCounter, setQuestionCounter] = useState(1);
+
+  const [questionCounter, setQuestionCounter] = useState(0);
+  const [questionNumber, setQuestionNumber] = useState(1);
+
+  const [firstSubmission, setFirstSubmission] = useState(true);
 
   const [title, setTitle] = useState("");
   const [question, setQuestion] = useState("");
@@ -63,6 +74,10 @@ const Create = () => {
         correct_answers: correct,
       };
 
+      if (correct.length + incorrect.length < 3) {
+        window.alert("3 is the minimum amount of answers");
+      }
+
       setQuestions([...questions, questionObj]);
       setQuiz({ title, questions });
 
@@ -77,21 +92,84 @@ const Create = () => {
       setCheckbox4(false);
       setCheckbox5(false);
 
-      submitQuiz(quiz);
+      //submitQuiz(quiz);
+      e.target.reset();
     } else {
       window.alert("you have not selected a correct answer");
     }
   };
 
-  const addQuestion = () => {
+  const submitQuiz = () => {
     console.log("addQuestion" + questionCounter);
     setQuestionCounter(questionCounter + 1);
+  };
+
+  const addQuestion = (e) => {
+    e.preventDefault();
+    if (firstSubmission) {
+    }
+    console.log("addQuestion" + questionCounter);
+    setQuestionCounter(questionCounter + 1);
+    setQuestionNumber(questionNumber + 1);
+    console.log(checkbox1, checkbox2, checkbox3, checkbox4, checkbox5);
+
+    if (
+      [checkbox1, checkbox2, checkbox3, checkbox4, checkbox5].includes(true)
+    ) {
+      let correct = [];
+      let incorrect = [];
+
+      checkbox1 ? correct.push(answer1) : incorrect.push(answer1);
+      checkbox1 ? correct.push(answer1) : incorrect.push(answer1);
+      checkbox2 ? correct.push(answer2) : incorrect.push(answer2);
+      checkbox3 ? correct.push(answer3) : incorrect.push(answer3);
+      checkbox4 ? correct.push(answer4) : incorrect.push(answer4);
+      checkbox5 ? correct.push(answer5) : incorrect.push(answer5);
+
+      let questionObj = {
+        question: question,
+        incorrect_answers: incorrect,
+        correct_answers: correct,
+      };
+
+      if (correct.length + incorrect.length < 3) {
+        window.alert("3 is the minimum amount of answers");
+      }
+
+      //set all states back to false for next question
+      setCheckbox1(false);
+      setCheckbox2(false);
+      setCheckbox3(false);
+      setCheckbox4(false);
+      setCheckbox5(false);
+
+      setQuestions([...questions, questionObj]);
+    }
+
+    e.target.reset();
+  };
+
+  const previousQuestion = () => {
+    console.log("questionNumber" + questionNumber);
+    if (questionNumber > 1) {
+      setQuestionNumber(questionNumber - 1);
+      console.log(questions);
+    }
+  };
+
+  const nextQuestion = () => {
+    console.log("next question", questionCounter, questionNumber);
+    if (questionCounter >= questionNumber) {
+      console.log("questionNumber" + questionNumber);
+      setQuestionNumber(questionNumber + 1);
+      console.log(questions);
+    }
   };
 
   return (
     <>
       <h1>Create</h1>
-      <form onSubmit={onSubmit}>
+      {questionNumber === 1 && (
         <div>
           <label>Title: </label>
           <input
@@ -100,6 +178,9 @@ const Create = () => {
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
+      )}
+      <h3>Question Number {questionNumber}</h3>
+      <form onSubmit={addQuestion}>
         <div>
           <label>Question: </label>
           <input
@@ -179,15 +260,25 @@ const Create = () => {
           />
         </div>
         <div>
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Add Question" />
         </div>
       </form>
-      <div>
-        <button onClick={() => addQuestion()}>Add Question</button>
-      </div>
+      {questionNumber !== 1 && (
+        <div>
+          <button onClick={() => previousQuestion()}>Previous Question</button>
+        </div>
+      )}
+      {questionCounter !== 0 && (
+        <div>
+          <button onClick={() => nextQuestion()}>Next Question</button>
+        </div>
+      )}
       <button onClick={() => navigate("/quizzes", { state })} type="button">
-        Back
+        Back to Quizzes
       </button>
+      <div>
+        <button onClick={() => submitQuiz()}>Submit</button>
+      </div>
       <input
         onClick={() => navigate("/")}
         type="submit"

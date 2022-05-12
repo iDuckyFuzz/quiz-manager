@@ -30,8 +30,9 @@ const mixAnswers = (answersArray) => {
 };
 
 const Quiz = (props) => {
-  const { state } = useLocation();
+  let { state } = useLocation();
   let params = useParams();
+  state = { ...state, id: params.id };
   const [realData, setRealData] = useState([]);
   const [shuffledAnswers, setshuffledAnswers] = useState([]);
   const [buttonText, setbuttonText] = useState("View Answers");
@@ -78,14 +79,14 @@ const Quiz = (props) => {
   return (
     <Body>
       <h1>{realData.title}</h1>
-      {state.canEdit || state.viewAnswers ? (
+      {(state.canEdit || state.viewAnswers) && (
         <button onClick={() => viewAnswers()} type="button">
           {buttonText}
         </button>
-      ) : null}
+      )}
 
       {state.canEdit && (
-        <button onClick={() => edit()} type="button">
+        <button onClick={() => navigate("/edit", { state })} type="button">
           Edit
         </button>
       )}

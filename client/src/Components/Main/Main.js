@@ -7,7 +7,7 @@ const Body = styled.div`
   text-align: center;
 `;
 
-const Main = (props, options) => {
+const Main = () => {
   const { state } = useLocation();
   let navigate = useNavigate();
 
