@@ -13,7 +13,7 @@ const Logout = () => {
       withCredentials: true,
     };
 
-    const response = await axios.post("http://localhost:5000/logout", config);
+    await axios.post("http://localhost:5000/logout", config);
     navigate("/");
   };
 

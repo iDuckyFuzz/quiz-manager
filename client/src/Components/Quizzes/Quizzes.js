@@ -28,7 +28,6 @@ const Quizzes = () => {
   const [removeQuiz, setRemoveQuiz] = useState(false);
 
   const fetchQuizzes = async () => {
-    console.log("called");
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +87,7 @@ const Quizzes = () => {
 
   const deleteQuiz = async (id) => {
     console.log(id);
-    const response = await fetch(`http://localhost:5000/quiz/delete/${id}`, {
+    await fetch(`http://localhost:5000/quiz/delete/${id}`, {
       method: "DELETE",
     });
     fetchQuizzes();

@@ -17,7 +17,6 @@ const Edit = () => {
   const navigate = useNavigate();
   const [quiz, setQuiz] = useState({});
 
-  const [updatedQuiz, setUpdatedQuiz] = useState({});
   const [quizUpdate, setQuizUpdated] = useState(false);
 
   const [newQ, setNewQ] = useState();
@@ -43,6 +42,8 @@ const Edit = () => {
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [quizTitle, setQuizTitle] = useState("");
 
   const fetchQuizzes = async (state) => {
     const config = {
@@ -81,6 +82,9 @@ const Edit = () => {
 
   const updateQuiz = () => {
     let array = quiz;
+
+    quiz.title = quizTitle ? quizTitle : quiz.title;
+
     setQuizLength(quiz.questions.length);
 
     if (!lastQuestionAdded && quizLength > previousQuizLength) {
@@ -236,6 +240,10 @@ const Edit = () => {
     setNewQ(e.target.value);
   };
 
+  const updateTitle = (e) => {
+    setQuizTitle(e.target.value);
+  };
+
   const deleteAnswer = (index, answer, i) => {
     let array = quiz;
     if (array.questions[index].correct_answers.includes(answer)) {
@@ -282,7 +290,10 @@ const Edit = () => {
       <Body>
         <h1>Edit</h1>
         <div>
-          <StyledInput defaultValue={quiz.title}></StyledInput>
+          <StyledInput
+            defaultValue={quiz.title}
+            onChange={(e) => updateTitle(e)}
+          ></StyledInput>
         </div>
         {quiz.questions.map((questions, index) => {
           return (
@@ -336,6 +347,7 @@ const Edit = () => {
           >
             Back to View Quiz
           </button>
+          <Logout />
         </div>
       </Body>
     );

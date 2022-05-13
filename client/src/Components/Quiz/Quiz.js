@@ -34,10 +34,8 @@ const Quiz = () => {
   let params = useParams();
   state = { ...state, id: params.id };
   const [realData, setRealData] = useState([]);
-  const [shuffledAnswers, setshuffledAnswers] = useState([]);
   const [buttonText, setbuttonText] = useState("View Answers");
   const [showAnswers, setShowAnswers] = useState(false);
-  const [editable, setEditable] = useState(false);
 
   //we can use the params to display the correct quiz
   const navigate = useNavigate();
