@@ -8,6 +8,18 @@ const Body = styled.div`
   text-align: center;
 `;
 
+const StyledH2 = styled.h2`
+  color: rgb(72, 76, 122);
+`;
+
+const StyledH1 = styled.h1`
+  color: rgb(72, 76, 122);
+`;
+
+const StyledLabel = styled.label`
+  color: rgb(72, 76, 122);
+`;
+
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUserName] = useState("");
@@ -45,11 +57,11 @@ const Login = () => {
   // This following section will display the form that takes the input from the user.
   return (
     <Body>
-      <h1>WebbiSkools Ltd</h1>
-      <h2>Login</h2>
+      <StyledH1>WebbiSkools Ltd</StyledH1>
+      <StyledH2>Login</StyledH2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username: </label>
+          <StyledLabel htmlFor="username">Username: </StyledLabel>
           <input
             type="text"
             id="username"
@@ -57,7 +69,7 @@ const Login = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password: </label>
+          <StyledLabel htmlFor="password">Password: </StyledLabel>
           <input
             type="password"
             id="password"
