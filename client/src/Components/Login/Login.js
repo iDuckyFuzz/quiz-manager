@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import axios from "axios";
+import StyledButton from "../StyledComponents/StyledButton";
 
 const Body = styled.div`
   text-align: center;
@@ -65,7 +66,7 @@ const Login = () => {
         </div>
         <div>{credentialsError}</div>
         <div>
-          <input type="submit" value="Login" />
+          <StyledButton type="submit" text="Login" />
         </div>
       </form>
     </Body>

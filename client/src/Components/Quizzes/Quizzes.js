@@ -3,15 +3,24 @@ import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router";
 import axios from "axios";
 import Logout from "../Logout/Logout";
+import StyledButton from "../StyledComponents/StyledButton";
+import StyledHeader from "../StyledComponents/StyledHeader";
 
 const QuizLink = styled.h3`
   font-size: 1.5em;
   text-align: center;
   border-radius: 3px;
   border: 1px solid;
-  width: 60%;
-  &:hover {
-    background-color: grey;
+  width: 80%;
+  color: rgb(72, 76, 122);
+  border-radius: 50px;
+  background-image: linear-gradient(180deg, #fff, #f5f5fa);
+  box-shadow: 0 4px 11px 0 rgb(37 44 97 / 15%),
+    0 1px 3px 0 rgb(93 100 148 / 20%);
+  transition: all 0.2s ease-out;
+  :hover {
+    box-shadow: 0 8px 22px 0 rgb(37 44 97 / 15%),
+      0 4px 6px 0 rgb(93 100 148 / 20%);
   }
   margin-left: auto;
   margin-right: auto;
@@ -19,6 +28,13 @@ const QuizLink = styled.h3`
 
 const Body = styled.div`
   text-align: center;
+`;
+
+const StyledDiv = styled.div`
+  display: flex;
+  width: 30%;
+  text-align: center;
+  margin: auto;
 `;
 
 const Quizzes = () => {
@@ -95,22 +111,26 @@ const Quizzes = () => {
   if (realData) {
     return (
       <Body>
-        <h1>Quizzes</h1>
+        <StyledHeader text="Quizzes" />
 
         {state.canEdit && (
           <div>
-            <button onClick={() => createQuiz()} type="button">
-              Create
-            </button>
-            <button onClick={() => enableDelete()} type="button">
-              Delete
-            </button>
+            <StyledButton
+              onClick={() => createQuiz()}
+              type="button"
+              text="Create"
+            />
+            <StyledButton
+              onClick={() => enableDelete()}
+              type="button"
+              text="Delete"
+            />
           </div>
         )}
         <div>
           {realData.map((quiz, i) => {
             return (
-              <>
+              <StyledDiv>
                 <QuizLink
                   onClick={() => navigate(`/quiz/${quiz._id}`, { state })}
                   className="quiz"
@@ -119,16 +139,20 @@ const Quizzes = () => {
                   {quiz.title}
                 </QuizLink>
                 {removeQuiz && (
-                  <button onClick={() => deleteQuiz(quiz._id)}>X</button>
+                  <StyledButton
+                    onClick={() => deleteQuiz(quiz._id)}
+                    text="X"
+                    type="button"
+                  />
                 )}
-              </>
+              </StyledDiv>
             );
           })}
         </div>
-        <input
+        <StyledButton
           onClick={() => navigate("/home", { state })}
           type="submit"
-          value="Back"
+          text="Back"
           className="btn btn-primary"
         />
         <Logout />

@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Logout from "../Logout/Logout";
 import axios from "axios";
+import StyledButton from "../StyledComponents/StyledButton";
+import StyledHeader from "../StyledComponents/StyledHeader";
 
 const Body = styled.div`
   text-align: center;
@@ -10,6 +12,10 @@ const Body = styled.div`
 
 const StyledInput = styled.input`
   width: 40%;
+  background-color: white;
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  padding-left: 40px;
 `;
 
 const Edit = () => {
@@ -288,7 +294,7 @@ const Edit = () => {
   if (quiz.questions) {
     return (
       <Body>
-        <h1>Edit</h1>
+        <StyledHeader text="Edit" />
         <div>
           <StyledInput
             defaultValue={quiz.title}
@@ -304,49 +310,66 @@ const Edit = () => {
                   key={questions.question}
                   onChange={(e) => newQuestion(e)}
                 ></StyledInput>
-                <button onClick={() => deleteQuestion(index)}>x</button>
+                <StyledButton
+                  onClick={() => deleteQuestion(index)}
+                  type="button"
+                  text="X"
+                />
                 {questions.correct_answers
                   .concat(questions.incorrect_answers)
                   .map((answer, i) => {
                     return (
                       <div>
-                        <input
+                        <StyledInput
                           defaultValue={answer}
                           key={answer}
                           onChange={(e) => setAnswer(e, i)}
-                        ></input>
-                        <input
+                        ></StyledInput>
+                        <StyledInput
                           defaultChecked={questions.correct_answers.includes(
                             answer
                           )}
                           onChange={(e) => setAnswer(e, i)}
                           type="checkbox"
-                        ></input>
-                        <button onClick={() => deleteAnswer(index, answer, i)}>
-                          x
-                        </button>
+                        ></StyledInput>
+                        <StyledButton
+                          onClick={() => deleteAnswer(index, answer, i)}
+                          text="X"
+                          type="button"
+                        />
                       </div>
                     );
                   })}
-                <button onClick={() => addAnswer(index)}>+</button>
+                <StyledButton
+                  onClick={() => addAnswer(index)}
+                  text="Add Answer"
+                  type="button"
+                />
               </div>
             </>
           );
         })}
         <div>
-          <button onClick={() => addQuestion()}>Add Question</button>
+          <StyledButton
+            onClick={() => addQuestion()}
+            text="Add Question"
+            type="button"
+          />
         </div>
         {error && <h3>{errorMessage}</h3>}
         <div>
-          <button onClick={() => updateQuiz()}>Update Quiz</button>
+          <StyledButton
+            onClick={() => updateQuiz()}
+            text="Update Quiz"
+            type="button"
+          />
         </div>
         <div>
-          <button
+          <StyledButton
             onClick={() => navigate(`/quiz/${state.id}`, { state })}
             type="button"
-          >
-            Back to View Quiz
-          </button>
+            text="Back to View Quiz"
+          />
           <Logout />
         </div>
       </Body>

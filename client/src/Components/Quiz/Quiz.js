@@ -4,9 +4,19 @@ import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import Logout from "../Logout/Logout";
+import StyledButton from "../StyledComponents/StyledButton";
+import StyledHeader from "../StyledComponents/StyledHeader";
 
 const Body = styled.div`
   text-align: center;
+`;
+
+const StyledH2 = styled.h2`
+  color: rgb(72, 76, 122);
+`;
+
+const StyledH3 = styled.h3`
+  color: rgb(72, 76, 122);
 `;
 
 const mixAnswers = (answersArray) => {
@@ -72,17 +82,21 @@ const Quiz = () => {
 
   return (
     <Body>
-      <h1>{realData.title}</h1>
+      <StyledHeader text={realData.title} />
       {(state.canEdit || state.viewAnswers) && (
-        <button onClick={() => viewAnswers()} type="button">
-          {buttonText}
-        </button>
+        <StyledButton
+          onClick={() => viewAnswers()}
+          type="button"
+          text={buttonText}
+        />
       )}
 
       {state.canEdit && (
-        <button onClick={() => navigate("/edit", { state })} type="button">
-          Edit
-        </button>
+        <StyledButton
+          onClick={() => navigate("/edit", { state })}
+          type="button"
+          text="Edit"
+        />
       )}
 
       {realData.questions &&
@@ -95,27 +109,27 @@ const Quiz = () => {
             <div>
               {!showAnswers && (
                 <>
-                  <h2>
+                  <StyledH2>
                     {index + 1}. {question.question}
-                  </h2>
+                  </StyledH2>
                   {shuffledAnswers.map((answer, i) => {
                     const answerOrder = ["a", "b", "c", "d", "e"];
                     return (
-                      <h3>
+                      <StyledH3>
                         {answerOrder[i]}) {answer}
-                      </h3>
+                      </StyledH3>
                     );
                   })}
                 </>
               )}
               {showAnswers && (
                 <>
-                  <h2>
+                  <StyledH2>
                     {index + 1}. {question.question}
-                  </h2>
+                  </StyledH2>
                   {shuffledAnswers.map((answer) => {
                     if ([question.correct_answers].includes(answer)) {
-                      return <h3>{answer}</h3>;
+                      return <StyledH3>{answer}</StyledH3>;
                     }
                   })}
                 </>
@@ -123,9 +137,11 @@ const Quiz = () => {
             </div>
           );
         })}
-      <button onClick={() => navigate("/quizzes", { state })} type="button">
-        Back
-      </button>
+      <StyledButton
+        onClick={() => navigate("/quizzes", { state })}
+        type="button"
+        text="Back"
+      />
       <Logout />
     </Body>
   );

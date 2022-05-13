@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import StyledButton from "../StyledComponents/StyledButton";
 
 const Logout = () => {
   let navigate = useNavigate();
@@ -17,11 +18,7 @@ const Logout = () => {
     navigate("/");
   };
 
-  return (
-    <button onClick={logout} type="button">
-      Logout
-    </button>
-  );
+  return <StyledButton onClick={logout} type="button" text="Logout" />;
 };
 
 export default Logout;
