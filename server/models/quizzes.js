@@ -1,13 +1,24 @@
 const mongoose = require("mongoose");
 
-//tables in mongodb are called collections
+const questionsSchema = new mongoose.Schema({
+  question: {
+    type: String,
+  },
+  correct_answers: {
+    type: Array,
+  },
+  incorrect_answers: {
+    type: Array,
+  },
+});
+
 const quizzes = new mongoose.Schema({
   title: {
     type: String,
     require: true,
   },
   questions: {
-    type: Array,
+    type: [questionsSchema],
     require: true,
   },
 });

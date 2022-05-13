@@ -50,12 +50,12 @@ app.get("/quiz/:id", async (req, res) => {
 
 app.delete("/quiz/delete/:id", async (req, res) => {
   const id = req.params.id;
-  const quizzes = await Quizzes.deleteOne({ id });
+  const quizzes = await Quizzes.findByIdAndRemove(id);
   res.json(quizzes);
 });
 
 app.post("/quiz/add", async (req, res) => {
-  const quizzes = await Quizzes.create(req.body);
+  const quizzes = await Quizzes.create(req.body.quiz);
   res.json(quizzes);
 });
 
@@ -108,10 +108,9 @@ app.post("/login", async (req, res) => {
     }
   }
 });
-
-app.get("/logout", (req, res) => {
+app.post("/logout", (req, res) => {
   authenticated = false;
-  res.clearCookie("jwt");
+
   res.json({
     response: "User has been logged out",
   });

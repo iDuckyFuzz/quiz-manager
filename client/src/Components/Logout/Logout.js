@@ -6,8 +6,14 @@ const Logout = () => {
   let navigate = useNavigate();
 
   const logout = async () => {
-    //delete session cookie
-    await axios.get("http://localhost:5000/logout");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    };
+
+    const response = await axios.post("http://localhost:5000/logout", config);
     navigate("/");
   };
 

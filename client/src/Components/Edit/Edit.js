@@ -50,7 +50,6 @@ const Edit = () => {
         "Content-Type": "application/json",
       },
     };
-
     const response = await axios.get(
       `http://localhost:5000/quiz/${state.id}`,
       config

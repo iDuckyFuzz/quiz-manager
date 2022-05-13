@@ -29,7 +29,7 @@ const mixAnswers = (answersArray) => {
   return answersArray;
 };
 
-const Quiz = (props) => {
+const Quiz = () => {
   let { state } = useLocation();
   let params = useParams();
   state = { ...state, id: params.id };
@@ -70,10 +70,6 @@ const Quiz = (props) => {
       setbuttonText("Hide Answers");
       setShowAnswers(true);
     }
-  };
-
-  const edit = () => {
-    console.log("edit");
   };
 
   return (

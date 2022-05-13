@@ -22,12 +22,13 @@ const Body = styled.div`
 `;
 
 const Quizzes = () => {
-  const { state } = useLocation();
+  let { state } = useLocation();
   const navigate = useNavigate();
   const [realData, setRealData] = useState([]);
   const [removeQuiz, setRemoveQuiz] = useState(false);
 
   const fetchQuizzes = async () => {
+    console.log("called");
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -52,54 +53,89 @@ const Quizzes = () => {
     }
   };
 
+  const createQuiz = async () => {
+    let quiz = {
+      title: "New Quiz Title",
+      questions: [
+        {
+          question: "New Question",
+          correct_answers: ["Correct Answer"],
+          incorrect_answers: ["Incorrect Answer", "Another Incorrect Answer"],
+        },
+      ],
+    };
+
+    const body = {
+      quiz,
+    };
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await axios.post(
+      "http://localhost:5000/quiz/add",
+      body,
+      config
+    );
+
+    state = { ...state, id: response.data._id };
+
+    navigate("/edit", { state });
+  };
+
   const deleteQuiz = async (id) => {
+    console.log(id);
     const response = await fetch(`http://localhost:5000/quiz/delete/${id}`, {
       method: "DELETE",
     });
-    console.log(response);
+    fetchQuizzes();
   };
+  if (realData) {
+    return (
+      <Body>
+        <h1>Quizzes</h1>
 
-  return (
-    <Body>
-      <h1>Quizzes</h1>
-
-      {state.canEdit && (
+        {state.canEdit && (
+          <div>
+            <button onClick={() => createQuiz()} type="button">
+              Create
+            </button>
+            <button onClick={() => enableDelete()} type="button">
+              Delete
+            </button>
+          </div>
+        )}
         <div>
-          <button onClick={() => navigate("/create", { state })} type="button">
-            Create
-          </button>
-          <button onClick={() => enableDelete()} type="button">
-            Delete
-          </button>
+          {realData.map((quiz, i) => {
+            return (
+              <>
+                <QuizLink
+                  onClick={() => navigate(`/quiz/${quiz._id}`, { state })}
+                  className="quiz"
+                  key={i}
+                >
+                  {quiz.title}
+                </QuizLink>
+                {removeQuiz && (
+                  <button onClick={() => deleteQuiz(quiz._id)}>X</button>
+                )}
+              </>
+            );
+          })}
         </div>
-      )}
-      <div>
-        {realData.map((quiz, i) => {
-          return (
-            <>
-              <QuizLink
-                onClick={() => navigate(`/quiz/${quiz._id}`, { state })}
-                className="quiz"
-                key={i}
-              >
-                {quiz.title}
-              </QuizLink>
-              {removeQuiz && (
-                <button onClick={() => deleteQuiz(quiz._id)}>X</button>
-              )}
-            </>
-          );
-        })}
-      </div>
-      <input
-        onClick={() => navigate("/home", { state })}
-        type="submit"
-        value="Back"
-        className="btn btn-primary"
-      />
-      <Logout />
-    </Body>
-  );
+        <input
+          onClick={() => navigate("/home", { state })}
+          type="submit"
+          value="Back"
+          className="btn btn-primary"
+        />
+        <Logout />
+      </Body>
+    );
+  }
 };
 
 export default Quizzes;
