@@ -60,7 +60,6 @@ app.post("/quiz/add", async (req, res) => {
 });
 
 app.post("/quiz/update/:id", async (req, res) => {
-  console.log("---->", req.body);
   const quizzes = await Quizzes.findOneAndUpdate(req.params.id, req.body);
 });
 

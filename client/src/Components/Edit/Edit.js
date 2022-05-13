@@ -21,10 +21,28 @@ const Edit = () => {
   const [quizUpdate, setQuizUpdated] = useState(false);
 
   const [newQ, setNewQ] = useState();
-  const [newA, setNewA] = useState();
-  const [correctAnswer, setCorrectAnswer] = useState();
+
+  const [newA1, setNewA1] = useState("");
+  const [newA2, setNewA2] = useState("");
+  const [newA3, setNewA3] = useState("");
+  const [newA4, setNewA4] = useState("");
+  const [newA5, setNewA5] = useState("");
+
+  const [check1, setCheck1] = useState(false);
+  const [check2, setCheck2] = useState(false);
+  const [check3, setCheck3] = useState(false);
+  const [check4, setCheck4] = useState(false);
+  const [check5, setCheck5] = useState(false);
+
+  const [newestQuestion, setNewestQuestion] = useState();
+  const [isFirstNewQuestion, setIsFirstNewQuesiton] = useState(true);
+  const [lastQuestionAdded, setLastQuestionAdded] = useState(false);
+
+  const [quizLength, setQuizLength] = useState();
+  const [previousQuizLength, setPreviousQuizLength] = useState();
 
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchQuizzes = async (state) => {
     const config = {
@@ -39,6 +57,8 @@ const Edit = () => {
     );
 
     setQuiz(response.data);
+    setQuizLength(response.data.questions.length);
+    setPreviousQuizLength(response.data.questions.length);
   };
 
   const postQuizData = async () => {
@@ -62,23 +82,43 @@ const Edit = () => {
 
   const updateQuiz = () => {
     let array = quiz;
+    setQuizLength(quiz.questions.length);
+
+    if (!lastQuestionAdded && quizLength > previousQuizLength) {
+      array.questions.pop();
+
+      array.questions.push(newestQuestion);
+      setLastQuestionAdded(true);
+      setPreviousQuizLength(quiz.questions.length);
+    } else {
+      //edit existing quiz questions
+    }
+
+    if (!isFirstNewQuestion) {
+      let array = quiz;
+      array.questions.pop();
+      console.log(newestQuestion);
+
+      array.questions.push(newestQuestion);
+
+      setQuiz({ ...array });
+    }
 
     array.questions.map((question) => {
       if (
         question.incorrect_answers.length + question.correct_answers.length <
         3
       ) {
-        console.log(
+        setError(true);
+        setErrorMessage(
           "cannot update, 1 or more question do not meet minimum requirements"
         );
-        setError(true);
-      } else {
-        // setQuizUpdated(true);
-        // setError(false);
-        console.log("posting data");
-        //postQuizData();
       }
     });
+
+    if (!error) {
+      postQuizData();
+    }
   };
 
   const addAnswer = (i) => {
@@ -96,43 +136,137 @@ const Edit = () => {
   };
 
   const addQuestion = (e) => {
-    console.log(e);
-    let array = quiz;
+    setLastQuestionAdded(false);
+    if (!isFirstNewQuestion) {
+      let array = quiz;
+      array.questions.pop();
+      console.log(newestQuestion);
 
-    console.log(
-      array.questions.push({
-        question: "",
-        incorrect_answers: [""],
-        correct_answers: [],
-      })
-    );
+      array.questions.push(newestQuestion);
+      setQuiz({ ...array });
+    }
+    setIsFirstNewQuesiton(false);
+
+    let array = quiz;
+    array.questions.push({
+      question: "",
+      incorrect_answers: [""],
+      correct_answers: [],
+    });
     setQuiz({ ...array });
   };
 
   const deleteQuestion = (e) => {
     let array = quiz;
-    console.log(e);
     array.questions.splice(e, 1);
     setQuiz({ ...array });
     setQuizUpdated(false);
   };
 
-  const newAnswer = (e, i) => {
-    console.log(e.target.value, i);
+  const setAnswer = (e, i) => {
+    let correct = [];
+    let incorrect = [];
+    console.log("changes: ", e.target.value);
+
+    if (e.target.type === "text") {
+      switch (i) {
+        case 0:
+          setNewA1(e.target.value);
+          break;
+        case 1:
+          setNewA2(e.target.value);
+          break;
+        case 2:
+          setNewA3(e.target.value);
+          break;
+        case 3:
+          setNewA4(e.target.value);
+          break;
+        case 4:
+          setNewA5(e.target.value);
+          break;
+      }
+    } else if (e.target.type === "checkbox") {
+      switch (i) {
+        case 0:
+          setCheck1(e.target.checked);
+          break;
+        case 1:
+          setCheck2(e.target.checked);
+          break;
+        case 2:
+          setCheck3(e.target.checked);
+          break;
+        case 3:
+          setCheck4(e.target.checked);
+          break;
+        case 4:
+          setCheck5(e.target.checked);
+          break;
+      }
+    }
+
+    let answers = [newA1, newA2, newA3, newA4, newA5];
+
+    answers.forEach((answer, i) => {
+      if (answer) {
+        if (i === 0) {
+          check1 ? correct.push(answer) : incorrect.push(answer);
+        } else if (i === 1) {
+          check2 ? correct.push(answer) : incorrect.push(answer);
+        } else if (i === 2) {
+          check3 ? correct.push(answer) : incorrect.push(answer);
+        } else if (i === 3) {
+          check4 ? correct.push(answer) : incorrect.push(answer);
+        } else if (i === 4) {
+          check5 ? correct.push(answer) : incorrect.push(answer);
+        }
+      }
+    });
+
+    let question = {
+      question: newQ,
+      correct_answers: correct,
+      incorrect_answers: incorrect,
+    };
+
+    setNewestQuestion({ ...question });
   };
 
-  const newQuestion = (e, i) => {
+  const newQuestion = (e) => {
     setNewQ(e.target.value);
   };
 
-  const deleteAnswer = (i, answer) => {
+  const deleteAnswer = (index, answer, i) => {
     let array = quiz;
-    if (array.questions[i].correct_answers.includes(answer)) {
-      let index = array.questions[i].correct_answers.indexOf(answer);
-      array.questions[i].correct_answers.splice(index, 1);
-    } else if (array.questions[i].incorrect_answers.includes(answer)) {
-      let index = array.questions[i].incorrect_answers.indexOf(answer);
-      array.questions[i].incorrect_answers.splice(index, 1);
+    if (array.questions[index].correct_answers.includes(answer)) {
+      let indexOf = array.questions[index].correct_answers.indexOf(answer);
+      array.questions[index].correct_answers.splice(indexOf, 1);
+    } else if (array.questions[index].incorrect_answers.includes(answer)) {
+      let indexOf = array.questions[index].incorrect_answers.indexOf(answer);
+      array.questions[index].incorrect_answers.splice(indexOf, 1);
+    }
+    switch (i) {
+      case 0:
+        setNewA1("");
+        setCheck1(false);
+        break;
+      case 1:
+        setNewA2("");
+        setCheck2(false);
+        break;
+      case 2:
+        setNewA3("");
+        setCheck3(false);
+        break;
+      case 3:
+        setNewA4("");
+        setCheck4(false);
+        break;
+      case 4:
+        setNewA5("");
+        setCheck5(false);
+        break;
     }
 
     setQuiz({ ...array });
@@ -169,18 +303,16 @@ const Edit = () => {
                         <input
                           defaultValue={answer}
                           key={answer}
-                          onChange={(e) => newAnswer(e, i)}
+                          onChange={(e) => setAnswer(e, i)}
                         ></input>
                         <input
                           defaultChecked={questions.correct_answers.includes(
                             answer
                           )}
-                          onChange={(e) => {
-                            console.log(e.target.checked);
-                          }}
+                          onChange={(e) => setAnswer(e, i)}
                           type="checkbox"
                         ></input>
-                        <button onClick={() => deleteAnswer(index, answer)}>
+                        <button onClick={() => deleteAnswer(index, answer, i)}>
                           x
                         </button>
                       </div>
@@ -194,7 +326,7 @@ const Edit = () => {
         <div>
           <button onClick={() => addQuestion()}>Add Question</button>
         </div>
-        {error && <h3>Unable to update</h3>}
+        {error && <h3>{errorMessage}</h3>}
         <div>
           <button onClick={() => updateQuiz()}>Update Quiz</button>
         </div>
