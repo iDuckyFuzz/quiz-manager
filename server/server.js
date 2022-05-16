@@ -109,8 +109,7 @@ app.post("/login", async (req, res) => {
   }
 });
 app.post("/logout", (req, res) => {
-  authenticated = false;
-
+  res.cookie("jwt", { expires: 0 });
   res.json({
     response: "User has been logged out",
   });
