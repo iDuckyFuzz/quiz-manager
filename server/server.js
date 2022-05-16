@@ -60,7 +60,7 @@ app.post("/quiz/add", async (req, res) => {
 });
 
 app.post("/quiz/update/:id", async (req, res) => {
-  const quizzes = await Quizzes.findOneAndUpdate(req.params.id, req.body);
+  const quizzes = await Quizzes.findByIdAndUpdate(req.params.id, req.body);
 });
 
 app.post("/login", async (req, res) => {

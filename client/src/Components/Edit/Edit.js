@@ -8,14 +8,16 @@ import StyledHeader from "../StyledComponents/StyledHeader";
 
 const Body = styled.div`
   text-align: center;
+  width: 60%;
+  margin: auto;
 `;
 
 const StyledInput = styled.input`
   width: 40%;
-  background-color: white;
-  background-position: 10px 10px;
-  background-repeat: no-repeat;
-  padding-left: 40px;
+`;
+
+const StyledContainer = styled.div`
+  margin-top: 10px;
 `;
 
 const Edit = () => {
@@ -319,7 +321,7 @@ const Edit = () => {
                   .concat(questions.incorrect_answers)
                   .map((answer, i) => {
                     return (
-                      <div>
+                      <StyledContainer>
                         <StyledInput
                           defaultValue={answer}
                           key={answer}
@@ -337,7 +339,7 @@ const Edit = () => {
                           text="X"
                           type="button"
                         />
-                      </div>
+                      </StyledContainer>
                     );
                   })}
                 <StyledButton
@@ -349,29 +351,29 @@ const Edit = () => {
             </>
           );
         })}
-        <div>
+        <StyledContainer>
           <StyledButton
             onClick={() => addQuestion()}
             text="Add Question"
             type="button"
           />
-        </div>
+        </StyledContainer>
         {error && <h3>{errorMessage}</h3>}
-        <div>
+        <StyledContainer>
           <StyledButton
             onClick={() => updateQuiz()}
             text="Update Quiz"
             type="button"
           />
-        </div>
-        <div>
+        </StyledContainer>
+        <StyledContainer>
           <StyledButton
             onClick={() => navigate(`/quiz/${state.id}`, { state })}
             type="button"
             text="Back to View Quiz"
           />
           <Logout />
-        </div>
+        </StyledContainer>
       </Body>
     );
   }
