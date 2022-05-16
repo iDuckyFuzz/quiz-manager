@@ -298,6 +298,7 @@ const Edit = () => {
       <Body>
         <StyledHeader text="Edit" />
         <div>
+          <label>Title: </label>
           <StyledInput
             defaultValue={quiz.title}
             onChange={(e) => updateTitle(e)}
@@ -307,6 +308,7 @@ const Edit = () => {
           return (
             <>
               <div>
+                <label>Question {index + 1}: </label>
                 <StyledInput
                   defaultValue={questions.question}
                   key={questions.question}
@@ -322,6 +324,7 @@ const Edit = () => {
                   .map((answer, i) => {
                     return (
                       <StyledContainer>
+                        <label>Answer {i + 1}: </label>
                         <StyledInput
                           defaultValue={answer}
                           key={answer}
