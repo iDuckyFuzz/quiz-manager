@@ -34,6 +34,8 @@ const Main = () => {
         <Logout />
       </Body>
     );
+  } else {
+    return <NotAuthorised></NotAuthorised>;
   }
 };
 
