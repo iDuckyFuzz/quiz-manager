@@ -25,7 +25,11 @@ const Button = styled.button`
 
 const StyledButton = (props) => {
   return (
-    <Button onClick={props.onClick} type={props.type}>
+    <Button
+      data-testid={props.datatestid}
+      onClick={props.onClick}
+      type={props.type}
+    >
       {props.text}
     </Button>
   );

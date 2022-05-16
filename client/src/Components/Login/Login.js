@@ -57,28 +57,34 @@ const Login = () => {
   // This following section will display the form that takes the input from the user.
   return (
     <Body>
-      <StyledH1>WebbiSkools Ltd</StyledH1>
-      <StyledH2>Login</StyledH2>
+      <StyledH1 data-testid="heading">WebbiSkools Ltd</StyledH1>
+      <StyledH2 data-testid="login">Login</StyledH2>
       <form onSubmit={handleSubmit}>
         <div>
-          <StyledLabel htmlFor="username">Username: </StyledLabel>
+          <StyledLabel data-testid="username" htmlFor="username">
+            Username:{" "}
+          </StyledLabel>
           <input
             type="text"
             id="username"
             onChange={(e) => setUserName(e.target.value)}
+            data-testid="username-input"
           />
         </div>
         <div>
-          <StyledLabel htmlFor="password">Password: </StyledLabel>
+          <StyledLabel data-testid="password" htmlFor="password">
+            Password:{" "}
+          </StyledLabel>
           <input
             type="password"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
+            data-testid="password-input"
           />
         </div>
         <div>{credentialsError}</div>
         <div>
-          <StyledButton type="submit" text="Login" />
+          <StyledButton datatestid="submit" type="submit" text="Login" />
         </div>
       </form>
     </Body>
