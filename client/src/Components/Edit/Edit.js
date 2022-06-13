@@ -244,8 +244,10 @@ const Edit = () => {
     setNewestQuestion({ ...question });
   };
 
-  const newQuestion = (e) => {
-    setNewQ(e.target.value);
+  const newQuestion = (e, i) => {
+    let array = quiz;
+    array.questions[i].question = e.target.value;
+    setQuiz(array);
   };
 
   const updateTitle = (e) => {
@@ -312,7 +314,7 @@ const Edit = () => {
                 <StyledInput
                   defaultValue={questions.question}
                   key={questions.question}
-                  onChange={(e) => newQuestion(e)}
+                  onChange={(e, i) => newQuestion(e, index)}
                 ></StyledInput>
                 <StyledButton
                   onClick={() => deleteQuestion(index)}
