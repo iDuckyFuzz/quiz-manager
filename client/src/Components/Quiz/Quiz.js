@@ -19,26 +19,6 @@ const StyledH3 = styled.h3`
   color: rgb(72, 76, 122);
 `;
 
-const mixAnswers = (answersArray) => {
-  let currentIndex = answersArray.length,
-    randomIndex;
-
-  // While there remain elements to shuffle.
-  while (currentIndex !== 0) {
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [answersArray[currentIndex], answersArray[randomIndex]] = [
-      answersArray[randomIndex],
-      answersArray[currentIndex],
-    ];
-  }
-
-  return answersArray;
-};
-
 const Quiz = () => {
   let { state } = useLocation();
   let params = useParams();
@@ -101,10 +81,9 @@ const Quiz = () => {
 
       {realData.questions &&
         realData.questions.map((question, index) => {
-          const shuffledAnswers = mixAnswers([
-            question.correct_answers,
-            ...question.incorrect_answers,
-          ]);
+          const shuffledAnswers = question.correct_answers.concat(
+            question.incorrect_answers
+          );
           return (
             <div>
               {!showAnswers && (
@@ -127,10 +106,8 @@ const Quiz = () => {
                   <StyledH2>
                     {index + 1}. {question.question}
                   </StyledH2>
-                  {shuffledAnswers.map((answer) => {
-                    if ([question.correct_answers].includes(answer)) {
-                      return <StyledH3>{answer}</StyledH3>;
-                    }
+                  {question.correct_answers.map((answer, i) => {
+                    return <StyledH3>{answer}</StyledH3>;
                   })}
                 </>
               )}
