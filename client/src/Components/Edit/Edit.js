@@ -91,41 +91,20 @@ const Edit = () => {
   const updateQuiz = () => {
     let array = quiz;
 
-    quiz.title = quizTitle ? quizTitle : quiz.title;
-    console.log("here");
-    setQuizLength(quiz.questions.length);
-
-    if (!lastQuestionAdded && quizLength > previousQuizLength) {
-      array.questions.pop();
-      console.log("here1");
-      array.questions.push(newestQuestion);
-      setLastQuestionAdded(true);
-      setPreviousQuizLength(quiz.questions.length);
-    } else {
-      //edit existing quiz questions
-      console.log("here2");
-    }
-
-    if (!isFirstNewQuestion) {
-      let array = quiz;
-      array.questions.pop();
-      console.log(newestQuestion);
-
-      array.questions.push(newestQuestion);
-      console.log("here3");
-      setQuiz({ ...array });
-    }
-
     array.questions.map((question) => {
+      console.log(
+        question.incorrect_answers.length + question.correct_answers.length
+      );
       if (
         question.incorrect_answers.length + question.correct_answers.length <
         3
       ) {
-        console.log("here4");
         setError(true);
         setErrorMessage(
           "cannot update, 1 or more question do not meet minimum requirements"
         );
+      } else {
+        setError(true);
       }
     });
 
@@ -178,7 +157,6 @@ const Edit = () => {
 
   const setAnswer = (e, i, questionIndex) => {
     let array = quiz;
-    console.log("changes: ", e.target.value, i, questionIndex, e.target.type);
 
     let length = array.questions[questionIndex].correct_answers.length;
 
@@ -186,12 +164,10 @@ const Edit = () => {
       let allQuestions = array.questions[questionIndex].correct_answers.concat(
         array.questions[questionIndex].incorrect_answers
       );
-      console.log(allQuestions[i]);
       if (e.target.checked) {
         let indexOf = array.questions[questionIndex].incorrect_answers.indexOf(
           allQuestions[i]
         );
-        console.log(indexOf);
         array.questions[questionIndex].correct_answers.push(allQuestions[i]);
         if (indexOf > -1) {
           array.questions[questionIndex].incorrect_answers.splice(indexOf, 1);
@@ -200,17 +176,12 @@ const Edit = () => {
         let indexOf = array.questions[questionIndex].correct_answers.indexOf(
           allQuestions[i]
         );
-        console.log(indexOf);
         array.questions[questionIndex].incorrect_answers.push(allQuestions[i]);
         if (indexOf > -1) {
           array.questions[questionIndex].correct_answers.splice(indexOf, 1);
         }
       }
-      console.log("checkbox", e.target.checked);
-      console.log(array);
-      //if check remove from correct array && add to incorrect
     } else {
-      //check both arrays to see which answer we are editing
       if (
         array.questions[questionIndex].correct_answers.includes(
           array.questions[questionIndex].correct_answers[i]
@@ -223,6 +194,7 @@ const Edit = () => {
       }
     }
 
+    console.log(array);
     setQuiz(array);
   };
 
