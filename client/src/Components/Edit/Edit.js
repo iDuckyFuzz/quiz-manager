@@ -92,17 +92,18 @@ const Edit = () => {
     let array = quiz;
 
     quiz.title = quizTitle ? quizTitle : quiz.title;
-
+    console.log("here");
     setQuizLength(quiz.questions.length);
 
     if (!lastQuestionAdded && quizLength > previousQuizLength) {
       array.questions.pop();
-
+      console.log("here1");
       array.questions.push(newestQuestion);
       setLastQuestionAdded(true);
       setPreviousQuizLength(quiz.questions.length);
     } else {
       //edit existing quiz questions
+      console.log("here2");
     }
 
     if (!isFirstNewQuestion) {
@@ -111,7 +112,7 @@ const Edit = () => {
       console.log(newestQuestion);
 
       array.questions.push(newestQuestion);
-
+      console.log("here3");
       setQuiz({ ...array });
     }
 
@@ -120,6 +121,7 @@ const Edit = () => {
         question.incorrect_answers.length + question.correct_answers.length <
         3
       ) {
+        console.log("here4");
         setError(true);
         setErrorMessage(
           "cannot update, 1 or more question do not meet minimum requirements"
@@ -174,74 +176,54 @@ const Edit = () => {
     setQuizUpdated(false);
   };
 
-  const setAnswer = (e, i) => {
-    let correct = [];
-    let incorrect = [];
-    console.log("changes: ", e.target.value);
+  const setAnswer = (e, i, questionIndex) => {
+    let array = quiz;
+    console.log("changes: ", e.target.value, i, questionIndex, e.target.type);
 
-    if (e.target.type === "text") {
-      switch (i) {
-        case 0:
-          setNewA1(e.target.value);
-          break;
-        case 1:
-          setNewA2(e.target.value);
-          break;
-        case 2:
-          setNewA3(e.target.value);
-          break;
-        case 3:
-          setNewA4(e.target.value);
-          break;
-        case 4:
-          setNewA5(e.target.value);
-          break;
+    let length = array.questions[questionIndex].correct_answers.length;
+
+    if (e.target.type === "checkbox") {
+      let allQuestions = array.questions[questionIndex].correct_answers.concat(
+        array.questions[questionIndex].incorrect_answers
+      );
+      console.log(allQuestions[i]);
+      if (e.target.checked) {
+        let indexOf = array.questions[questionIndex].incorrect_answers.indexOf(
+          allQuestions[i]
+        );
+        console.log(indexOf);
+        array.questions[questionIndex].correct_answers.push(allQuestions[i]);
+        if (indexOf > -1) {
+          array.questions[questionIndex].incorrect_answers.splice(indexOf, 1);
+        }
+      } else {
+        let indexOf = array.questions[questionIndex].correct_answers.indexOf(
+          allQuestions[i]
+        );
+        console.log(indexOf);
+        array.questions[questionIndex].incorrect_answers.push(allQuestions[i]);
+        if (indexOf > -1) {
+          array.questions[questionIndex].correct_answers.splice(indexOf, 1);
+        }
       }
-    } else if (e.target.type === "checkbox") {
-      switch (i) {
-        case 0:
-          setCheck1(e.target.checked);
-          break;
-        case 1:
-          setCheck2(e.target.checked);
-          break;
-        case 2:
-          setCheck3(e.target.checked);
-          break;
-        case 3:
-          setCheck4(e.target.checked);
-          break;
-        case 4:
-          setCheck5(e.target.checked);
-          break;
+      console.log("checkbox", e.target.checked);
+      console.log(array);
+      //if check remove from correct array && add to incorrect
+    } else {
+      //check both arrays to see which answer we are editing
+      if (
+        array.questions[questionIndex].correct_answers.includes(
+          array.questions[questionIndex].correct_answers[i]
+        )
+      ) {
+        array.questions[questionIndex].correct_answers[i] = e.target.value;
+      } else if (array.questions[questionIndex].incorrect_answers.includes) {
+        array.questions[questionIndex].incorrect_answers[i - length] =
+          e.target.value;
       }
     }
 
-    let answers = [newA1, newA2, newA3, newA4, newA5];
-
-    answers.forEach((answer, i) => {
-      if (answer) {
-        if (i === 0) {
-          check1 ? correct.push(answer) : incorrect.push(answer);
-        } else if (i === 1) {
-          check2 ? correct.push(answer) : incorrect.push(answer);
-        } else if (i === 2) {
-          check3 ? correct.push(answer) : incorrect.push(answer);
-        } else if (i === 3) {
-          check4 ? correct.push(answer) : incorrect.push(answer);
-        } else if (i === 4) {
-          check5 ? correct.push(answer) : incorrect.push(answer);
-        }
-      }
-    });
-
-    let question = {
-      question: newQ,
-      correct_answers: correct,
-      incorrect_answers: incorrect,
-    };
-
-    setNewestQuestion({ ...question });
+    setQuiz(array);
   };
 
   const newQuestion = (e, i) => {
@@ -330,13 +312,13 @@ const Edit = () => {
                         <StyledInput
                           defaultValue={answer}
                           key={answer}
-                          onChange={(e) => setAnswer(e, i)}
+                          onChange={(e) => setAnswer(e, i, index)}
                         ></StyledInput>
                         <StyledInput
                           defaultChecked={questions.correct_answers.includes(
                             answer
                           )}
-                          onChange={(e) => setAnswer(e, i)}
+                          onChange={(e) => setAnswer(e, i, index)}
                           type="checkbox"
                         ></StyledInput>
                         <StyledButton
