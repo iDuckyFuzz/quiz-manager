@@ -104,7 +104,7 @@ const Edit = () => {
           "cannot update, 1 or more question do not meet minimum requirements"
         );
       } else {
-        setError(true);
+        setError(false);
       }
     });
 
@@ -128,18 +128,8 @@ const Edit = () => {
   };
 
   const addQuestion = (e) => {
-    setLastQuestionAdded(false);
-    if (!isFirstNewQuestion) {
-      let array = quiz;
-      array.questions.pop();
-      console.log(newestQuestion);
-
-      array.questions.push(newestQuestion);
-      setQuiz({ ...array });
-    }
-    setIsFirstNewQuesiton(false);
-
     let array = quiz;
+
     array.questions.push({
       question: "",
       incorrect_answers: [""],
